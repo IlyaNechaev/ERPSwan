@@ -1,4 +1,6 @@
-using PL.Web.Data;
+using ES.Web.Middleware;
+using ES.Web.Data;
+using ES.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddSqlDbContext(builder.Configuration);
 
+builder.Services.AddTransient<IUserService, UserService>();
+
 #endregion
 
 var app = builder.Build();
@@ -28,5 +32,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseMiddleware<JwtMiddleware>();
 
 app.Run();
