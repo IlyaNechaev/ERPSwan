@@ -17,7 +17,7 @@ public static class DataExtensions
         {
             if (IsConnected(connectionString))
             {
-                services.AddDbContext<EShopDbContext>(builder =>
+                services.AddDbContext<ESDbContext>(builder =>
                 {
                     builder.UseSqlServer(connectionString);
                 });
