@@ -4,7 +4,12 @@ namespace ES.Web.Services;
 
 public interface IUserService
 {
-    public Task RegisterUser(User newUser);
+    public Task AddUserAsync(User newUser);
+    public Task RemoveUserAsync(Guid userId);
 
-    public Task LoginUser(string login, string password);
+    public Task<User> GetUserAsync(string login);
+    public Task<User> GetUserAsync(Guid userId);
+
+    public Task<bool> ExistsUserAsync(string login);
+    public Task<bool> ExistsUserAsync(Guid userId);
 }

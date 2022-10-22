@@ -18,12 +18,29 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public Task LoginUser(string login, string password)
+    public async Task<User> GetUserAsync(string login)
     {
-        throw new NotImplementedException();
+        var user = await Task.Run(() => _context.Users.AsQueryable().FirstOrDefault(u => u.Login == login));
+        if (user is null)
+        {
+            throw new ArgumentException($"Не удалось найти пользователя {login}");
+        }
+
+        return user;
     }
 
-    public async Task RegisterUser(User newUser)
+    public async Task<User> GetUserAsync(Guid userId)
+    {
+        var user = await Task.Run(() => _context.Users.AsQueryable().FirstOrDefault(u => u.ObjectID == userId));
+        if (user is null)
+        {
+            throw new ArgumentException($"Не удалось найти пользователя {userId}");
+        }
+
+        return user;
+    }
+
+    public async Task AddUserAsync(User newUser)
     {
         try
         {
@@ -33,7 +50,28 @@ public class UserService : IUserService
         {
             _logger.LogError(ex.Message);
         }
+    }
 
+    public async Task RemoveUserAsync(Guid userId)
+    {
+        var user = _context.Users.AsQueryable().FirstOrDefault(u => u.ObjectID == userId);
 
+        if (user is null)
+        {
+            throw new ArgumentException($"Не удалось найти пользователя {userId}");
+        }
+
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+    }
+
+    public Task<bool> ExistsUserAsync(string login)
+    {
+        return Task.Run(() => _context.Users.AsQueryable().Any(u => u.Login == login));
+    }
+
+    public Task<bool> ExistsUserAsync(Guid userId)
+    {
+        return Task.Run(() => _context.Users.AsQueryable().Any(u => u.ObjectID == userId));
     }
 }

@@ -14,27 +14,18 @@ public class HomeController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            return Ok(ResponseFactory.CreateResponse(ModelState));
+            return Ok(ModelState);
         }
 
-        var user = await userService.GetUser(model.Login, model.Password);
-        if (user is null)
-        {
-            ModelState.AddModelError("Default", "Пользователя с такими логином и паролем не существует");
-            return Ok(ResponseFactory.CreateResponse(ModelState));
-        }
-
-        var token = string.Empty;
         try
         {
-            token = _signInManager.LogIn().UsingJWT(user);
+            await userService.LoginUser(model.Login, model.Password);
         }
         catch (Exception ex)
         {
-            ModelState.AddModelError("Default", ex.Message);
-            return Ok(ResponseFactory.CreateResponse(ModelState));
+            return BadRequest(ex.Message);
         }
 
-        return Ok(ResponseFactory.CreateResponse(token, user.ObjectID, user.IsDefault));
+        return Ok();
     }
 }

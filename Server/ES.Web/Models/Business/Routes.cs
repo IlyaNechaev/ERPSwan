@@ -2,5 +2,5 @@
 
 public static class Routes
 {
-    public static string Login = "/login";
+    public static const string Login = "/login";
 }
