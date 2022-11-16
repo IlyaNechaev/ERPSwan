@@ -10,7 +10,8 @@ public class HomeController : ControllerBase
 {
     [HttpPost(Routes.Login)]
     public async Task<IActionResult> Login([FromBody] LoginEditModel model,
-                               [FromServices] IUserService userService)
+                               [FromServices] IUserService userService,
+                               [FromServices] SignInManager siManager)
     {
         if (!ModelState.IsValid)
         {
@@ -19,7 +20,9 @@ public class HomeController : ControllerBase
 
         try
         {
-            await userService.LoginUser(model.Login, model.Password);
+            var user = await userService.GetUserAsync(model.Login);
+
+            siManager.SignIn().UsingJWT(user);
         }
         catch (Exception ex)
         {
