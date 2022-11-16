@@ -9,6 +9,8 @@ namespace ES.Web.Controllers;
 [ApiController]
 public class HomeController : ControllerBase
 {
+    [HttpPost]
+    [Route(ApiRoutes.Home.Register)]
     public async Task<IActionResult> Register([FromBody] RegisterEditModel model,
         [FromServices] SignInManager siManager)
     {
@@ -27,17 +29,17 @@ public class HomeController : ControllerBase
             return Ok(ModelState);
         }
 
+        var token = string.Empty;
         try
         {
             var user = await userService.GetUserAsync(model.Login);
-
-            siManager.SignIn().UsingJWT(user);
+            token = siManager.SignIn().UsingJWT(user);
         }
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
 
-        return Ok();
+        return Ok(token);
     }
 }

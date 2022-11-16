@@ -45,6 +45,7 @@ public class UserService : IUserService
         try
         {
             await _context.Users.AddAsync(newUser);
+            await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
