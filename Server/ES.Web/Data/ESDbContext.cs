@@ -1,13 +1,13 @@
 ﻿using ES.Web.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace PL.Web.Data;
+namespace ES.Web.Data;
 
-public class EShopDbContext : DbContext
+public class ESDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
 
-    public EShopDbContext(DbContextOptions options) : base(options)
+    public ESDbContext(DbContextOptions options) : base(options)
     {
         Database.EnsureCreated();
     }
