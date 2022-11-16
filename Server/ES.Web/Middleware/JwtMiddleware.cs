@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ES.Web.Extensions;
+using ES.Web.Models;
+using ES.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace ES.Web.Middleware
 {
@@ -24,7 +27,7 @@ namespace ES.Web.Middleware
                 try
                 {
                     var userId = Guid.Parse(principal.GetClaim(ClaimKey.Id));
-                    context.Items["User"] = await userService.GetUser(userId);
+                    context.Items["User"] = await userService.GetUserAsync(userId);
                 }
                 catch { }
             }

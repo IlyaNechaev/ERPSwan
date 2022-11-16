@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddSqlDbContext(builder.Configuration);
 
-builder.Services.AddSingleton<SignInManager, SignInManager>();
+builder.Services.AddTransient<SignInManager, SignInManager>();
 builder.Services.AddTransient<IUserService, UserService>();
 
 #endregion

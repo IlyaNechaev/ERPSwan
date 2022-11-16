@@ -1,5 +1,4 @@
-﻿using ExamManager.Models;
-using ExamManager.Services;
+﻿using ES.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +34,7 @@ public class JwtAuthorizeAttribute : Attribute, IAuthorizationFilter
         {
             if (string.IsNullOrEmpty(_redirectUrl))
             {
-                context.Result = new JsonResult(ResponseFactory.CreateResponse("Пользователь не авторизован", System.Net.HttpStatusCode.Unauthorized));
+                context.Result = new JsonResult("Пользователь не авторизован");
             }
             else
             {
