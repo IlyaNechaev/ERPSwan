@@ -1,45 +1,22 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-namespace PL.Web.Data;
+namespace ES.Web.Data;
 
 public static class DataExtensions
 {
-    // Add SqlServer EFCore implementation
+    const string ASPNET_CONNECTION = "ASPNET_DB_CONNECTION";
+
+    // Регистрация сервиса SqlServer EFCore
     public static void AddSqlDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionStrings = configuration
-            .GetSection("ConnectionStrings")
-            .GetChildren()
-            .Select(n => n.Value);
+        var csType = Environment.GetEnvironmentVariable(ASPNET_CONNECTION) ?? "Default";
 
-        foreach (var connectionString in connectionStrings)
+        var connectionString = configuration.GetConnectionString(csType);
+
+        services.AddDbContext<ESDbContext>(builder =>
         {
-            if (IsConnected(connectionString))
-            {
-                services.AddDbContext<EShopDbContext>(builder =>
-                {
-                    builder.UseSqlServer(connectionString);
-                });
-                return;
-            }
-        }
-    }
-
-    // Проверка возможности подключения по connectionString
-    private static bool IsConnected(string connectionString)
-    {
-        using var sqlConnection = new SqlConnection(connectionString);
-
-        try
-        {
-            sqlConnection.Open();
-        }
-        catch(SqlException)
-        {
-            return false;
-        }
-
-        return true;
+            builder.UseSqlServer(connectionString);
+        });
     }
 }
