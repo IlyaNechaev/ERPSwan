@@ -18,6 +18,7 @@ builder.Services.AddSqlDbContext(builder.Configuration);
 
 builder.Services.AddTransient<SignInManager, SignInManager>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IJwtUtils, JwtUtils>();
 
 #endregion
 
