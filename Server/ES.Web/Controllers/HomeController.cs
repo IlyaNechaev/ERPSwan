@@ -9,6 +9,14 @@ namespace ES.Web.Controllers;
 [ApiController]
 public class HomeController : ControllerBase
 {
+    public async Task<IActionResult> Register([FromBody] RegisterEditModel model,
+        [FromServices] SignInManager siManager)
+    {
+        var registeredUser = await siManager.Register(model);
+
+        return Ok(registeredUser);
+    }
+
     [HttpPost(ApiRoutes.Home.Login)]
     public async Task<IActionResult> Login([FromBody] LoginEditModel model,
                                [FromServices] IUserService userService,
