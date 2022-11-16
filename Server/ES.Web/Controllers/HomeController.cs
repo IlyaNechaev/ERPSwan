@@ -1,3 +1,4 @@
+using ES.Web.Contracts.V1;
 using ES.Web.Models;
 using ES.Web.Services;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ namespace ES.Web.Controllers;
 [ApiController]
 public class HomeController : ControllerBase
 {
-    [HttpPost(Routes.Login)]
+    [HttpPost(ApiRoutes.Home.Login)]
     public async Task<IActionResult> Login([FromBody] LoginEditModel model,
                                [FromServices] IUserService userService,
                                [FromServices] SignInManager siManager)
