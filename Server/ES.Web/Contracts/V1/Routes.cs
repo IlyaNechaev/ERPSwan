@@ -9,9 +9,22 @@ public static class ApiRoutes
     public static class Home
     {
         public const string Login = $"{Base}/login";
-
         public const string Register = $"{Base}/register";
-
         public const string Test = $"{Base}/test";
+    }
+
+    public static class Store
+    {
+        public const string GetStore = $"{Base}/store/get";
+        public const string GetStoreList = $"{Base}/store/get-list";
+    }
+
+    public static class Order
+    {
+        public const string GetOrder = $"{Base}/order/get";
+        public const string GetOrderList = $"{Base}/order/get-list";
+        public const string CreateOrder = $"{Base}/order/create";
+        public const string ModifyOrder = $"{Base}/order/modify";
+        public const string DeleteOrder = $"{Base}/order/delete";
     }
 }
