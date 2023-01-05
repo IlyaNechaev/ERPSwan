@@ -1,4 +1,6 @@
-﻿namespace ES.Web.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ES.Web.Models;
 
 public record Entity
 {

@@ -15,5 +15,6 @@ public enum UserRole
 {
     GUEST = 0,
     ADMIN = 1 << 0,
-    USER = 1 << 1
+    USER = 1 << 1,
+    SECRETARY = 1 << 2
 }
