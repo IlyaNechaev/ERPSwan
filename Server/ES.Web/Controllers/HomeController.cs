@@ -15,8 +15,14 @@ public class HomeController : ControllerBase
         [FromServices] SignInManager siManager)
     {
         var registeredUser = await siManager.Register(model);
+        var userResponse = new
+        {
+            FirstName = registeredUser.FirstName,
+            LastName = registeredUser.LastName,
+            ObjectID = registeredUser.ObjectID
+        };
 
-        return Ok(registeredUser);
+        return Ok(userResponse);
     }
 
     [HttpPost(ApiRoutes.Home.Login)]
@@ -35,9 +41,9 @@ public class HomeController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(new { Error = ex.Message });
         }
 
-        return Ok(token);
+        return Ok(new { token = token });
     }
 }
