@@ -6,11 +6,13 @@ public class SignInManager
 {
     private IServiceProvider _services;
     private IUserService _userService;
+    private ISecurityService _securityService;
 
-    public SignInManager(IServiceProvider services, IUserService userService)
+    public SignInManager(IServiceProvider services, IUserService userService, ISecurityService securityService)
     {
         _services = services;
         _userService = userService;
+        _securityService = securityService;
     }
 
     public SignIn SignIn()
@@ -30,7 +32,7 @@ public class SignInManager
             FirstName = model.FirstName,
             LastName = model.LastName,
             Login = model.Login,
-            PasswordHash = model.Password,
+            PasswordHash = _securityService.Encrypt(model.Password),
             BirthDay = model.BirthDay,
             Age = DateTime.Now.Year - model.BirthDay.Year,
             Role = UserRole.USER

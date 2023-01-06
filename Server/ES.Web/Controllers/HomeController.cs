@@ -21,8 +21,7 @@ public class HomeController : ControllerBase
 
     [HttpPost(ApiRoutes.Home.Login)]
     public async Task<IActionResult> Login([FromBody] LoginEditModel model,
-                               [FromServices] IUserService userService,
-                               [FromServices] SignInManager siManager)
+        [FromServices] SignInManager siManager)
     {
         if (!ModelState.IsValid)
         {
@@ -32,8 +31,7 @@ public class HomeController : ControllerBase
         var token = string.Empty;
         try
         {
-            var user = await userService.GetUserAsync(model.Login);
-            token = siManager.SignIn().UsingJWT(user);
+            token = await siManager.SignIn().UsingJWTAsync(model.Login, model.Password);
         }
         catch (Exception ex)
         {
