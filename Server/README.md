@@ -1,5 +1,28 @@
 # Описание API
 
+<style>
+    th{
+        background-color: rgba(1,1,1,.3)
+    }
+    td,th{
+        border: 1px solid black;
+    }
+    .clr-cyan{
+        background-color: rgba(1,200,200,.5)
+    }
+    a,a:visited{
+        text-decoration: none;
+        color: rgba(1,100,200,1);
+    }
+    a:hover{
+        color: rgba(1,100,200,.7);
+    }
+    .req{
+        font-weight: 600;
+        color: rgba(1,100,150,1);
+    }
+</style>
+
 ## Склад
 
 <table>
@@ -80,10 +103,40 @@
         <td><b>POST</b></td>
         <td>
             Изменяет значения полей сущетсвующего ПЗ</br>
-            <b>Запрос</b>: <a href="#createorder">CreateOrder</a></br>
+            <b>Запрос</b>: <a href="#modifyorders">ModifyOrders</a></br>
             Запрос будет менять поля у сущности с соответствующим идентификатором
         </td>
         <td><a href="#order">Order</a></td>
+    </tr>
+    <tr>
+        <td>/order/approve</td>
+        <td><b>POST</b></td>
+        <td>
+            Запрос на утверждение заказа</br>
+            <b>Параметры</b>:</br>
+            <u>id</u> - идентификатор ПЗ</br>
+        </td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>/order/complete</td>
+        <td><b>POST</b></td>
+        <td>
+            Подтверждение выполнения части заказа</br>
+            <b>Параметры</b>:</br>
+            <u>id</u> - идентификатор части ПЗ</br>
+        </td>
+        <td>-</td>
+    </tr>
+    <tr>
+        <td>/order/check</td>
+        <td><b>POST</b></td>
+        <td>
+            Подтверждение проверки заказа</br>
+            <b>Параметры</b>:</br>
+            <u>id</u> - идентификатор части ПЗ</br>
+        </td>
+        <td>-</td>
     </tr>
     <tr>
         <td>/order/delete</td>
@@ -134,7 +187,7 @@
     </tr>
     <tr>
         <td colspan=2>list</td>
-        <td>store</td>
+        <td>store[]</td>
         <td>Список материалов</td>
     </tr>
     <tr>
@@ -220,7 +273,7 @@
     </tr>    
     <tr>
         <td colspan=3>parts</td>
-        <td>part</td>
+        <td>part[]</td>
         <td>Части заказа</td>
     </tr>
     <tr>
@@ -250,7 +303,7 @@
     <tr>
         <td class="clr-cyan"></td>
         <td colspan=2>storelist</td>
-        <td>store</td>
+        <td>store[]</td>
         <td>Список используемых материалов</td>
     </tr>
     <tr>
@@ -301,7 +354,7 @@
     </tr>
     <tr>
         <td colspan=2>list</td>
-        <td>order</td>
+        <td>order[]</td>
         <td></td>
     </tr>
     <tr>
@@ -345,7 +398,7 @@
     </tr>
     <tr>
         <td colspan=3>parts</td>
-        <td>part</td>
+        <td>part[]</td>
         <td>Части заказа</td>
     </tr>
     <tr>
@@ -363,10 +416,80 @@
     <tr>
         <td class="clr-cyan"></td>
         <td colspan=2>storelist</td>
-        <td>store</td>
+        <td>store[]</td>
         <td>Список используемых материалов</td>
     </tr>
     <tr>
+        <td class="clr-cyan"></td>
+        <td class="clr-cyan"></td>
+        <td>id</td>
+        <td>guid</td>
+        <td>Идентификатор материала</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td class="clr-cyan"></td>
+        <td>count</td>
+        <td>int</td>
+        <td>Используемое кол-во материала</td>
+    </tr>
+</table>
+
+### ModifyOrders
+
+<table>
+    <tr>
+        <th colspan=3>Название</th>
+        <th>Тип данных</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+        <td colspan=3>orders</td>
+        <td>order[]</td>
+        <td>Заказы</td>
+    </tr>
+    <tr class="req">
+        <td class="clr-cyan"></td>
+        <td colspan=2>id</td>
+        <td>guid</td>
+        <td>Идентификатор заказа</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td colspan=2>name</td>
+        <td>string</td>
+        <td>Название заказа</td>
+    </tr>
+    <tr>
+        <td colspan=3>parts</td>
+        <td>part[]</td>
+        <td>Части заказа</td>
+    </tr>
+    <tr class="req">
+        <td class="clr-cyan"></td>
+        <td colspan=2>id</td>
+        <td>guid</td>
+        <td>Идентификатор части заказа</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td colspan=2>order_num</td>
+        <td>int</td>
+        <td>Порядковый номер</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td colspan=2>date_end</td>
+        <td>date</td>
+        <td>Дата окончания выполнения</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td colspan=2>storelist</td>
+        <td>store[]</td>
+        <td>Используемые материалы</td>
+    </tr>
+    <tr class="req">
         <td class="clr-cyan"></td>
         <td class="clr-cyan"></td>
         <td>id</td>
