@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400&display=swap');
+
+:root{
+    --clr-primary: rgb(31, 164, 226);
+}
+
+.btn{
+    border: 1px solid black;
+    padding: .5rem 1rem;
+    border-radius: .5rem;
+
+    font-size: 1.2rem;
+    font-family: var(--font-oswald);
+}
+
+.btn-primary{
+    color: var(--clr-primary);
+    border: 1px solid var(--clr-primary);
+    background-color: white;
+    transition: 200ms;
+}
+
+.btn-primary:hover{
+    color: white;
+    background-color: var(--clr-primary);
+    cursor: pointer;
+}

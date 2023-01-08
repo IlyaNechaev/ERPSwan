@@ -1,0 +1,88 @@
+:root{
+    --font-roboto: 'Roboto', sans-serif;
+    --font-oswald: 'Oswald', sans-serif;
+}
+
+body{
+    height: 100vh;
+}
+
+.ctr{
+    display: grid;
+    place-items: center;
+
+    height: 100%;
+}
+
+.form{
+    display: grid;
+    grid-template-rows: 1fr 2fr 1fr;
+    height: 40%;
+    width: 40%;
+    padding: 0 5%;
+    
+    box-shadow: 0 0 3px 3px rgba(1, 1, 1, .2);
+    border-radius: 20px;
+}
+
+.form > .header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: var(--font-oswald);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.form > .body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20%;
+}
+
+.form > .body > input{
+    width: 95%;
+    padding: .5rem;
+    font-size: 1.5rem;
+    font-family: var(--font-oswald);
+
+    border: 1px solid rgba(1, 1, 1, .2);
+    border-radius: 5px;
+}
+
+.form > .body > input::placeholder{
+    color: rgba(1, 1, 1, .25);
+}
+
+.form > .body > input:focus{
+    outline: none;
+    border: 1px solid rgb(44, 171, 202);
+    box-shadow: 0 0 .2rem .2rem rgb(44, 171, 202, .5);
+
+    transition: 200ms;
+}
+
+.form > .footer{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: .5rem;
+    justify-self: center;
+    width: 100%;
+}
+
+@media(min-width: 1000px){
+    .form{
+        width: 30%;
+        padding: 0 2%;
+    }
+}
+
+@media(min-width: 1500px){
+    .form{
+        width: 20%;
+    }
+}
