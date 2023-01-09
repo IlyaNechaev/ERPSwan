@@ -1,5 +1,6 @@
 import './login.css';
 import React from 'react';
+import RequestManager from '../contracts/requests';
 
 function Login() {
 
@@ -9,16 +10,9 @@ function Login() {
     async function handleLogin(e) {
         e.preventDefault();
 
-        let loginModel = {
-            login: login,
-            password: password
-        }
-        let response = await fetch("/api/v1/login", {
-            method: "POST",
-            headers:{'content-type': 'application/json'},
-            body: JSON.stringify(loginModel)
-          });
-        console.log(response.json());
+        await RequestManager.loginUser(login, password)
+            .then((res) => res.json())
+            .then((data) => console.log(data));
     }
 
     return (
