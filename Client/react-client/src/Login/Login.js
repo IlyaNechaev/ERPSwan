@@ -1,6 +1,7 @@
 import './login.css';
 import React from 'react';
 import RequestManager from '../contracts/requests';
+import CookieManager from '../utils/Cookie';
 
 function Login() {
 
@@ -11,8 +12,11 @@ function Login() {
         e.preventDefault();
 
         await RequestManager.loginUser(login, password)
-            .then((res) => res.json())
-            .then((data) => console.log(data));
+            .then((res) => {
+                if (res.ok){
+                    return res.json();
+                }
+            });
     }
 
     return (
