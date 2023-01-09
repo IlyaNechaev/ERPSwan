@@ -41,7 +41,7 @@ public class HomeController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { Error = ex.Message });
+            return Ok(new { Error = ex.Message });
         }
 
         return Ok(new { token = token });

@@ -15,6 +15,7 @@ function Login() {
         }
         let response = await fetch("/api/v1/login", {
             method: "POST",
+            headers:{'content-type': 'application/json'},
             body: JSON.stringify(loginModel)
           });
         console.log(response.json());
