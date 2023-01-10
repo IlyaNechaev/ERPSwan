@@ -74,11 +74,6 @@ public class ESDbContext : DbContext
         // PRIMARY KEY
         orderEntity.HasKey(nameof(Order.ObjectID));
 
-        // Name
-        orderEntity.Property(nameof(Order.Name))
-            .IsRequired(true)
-            .HasMaxLength(255);
-
         // RegDate
         orderEntity.Property(nameof(Order.RegDate))
             .IsRequired(true);
@@ -99,6 +94,11 @@ public class ESDbContext : DbContext
             .WithOne(nameof(OrderPart.Order))
             .HasPrincipalKey(nameof(Order.ObjectID))
             .HasForeignKey(nameof(OrderPart.OrderID));
+
+        orderEntity
+            .HasOne(nameof(Order.Foreman))
+            .WithMany()
+            .HasForeignKey(nameof(Order.ForemanID));
 
         #endregion ORDER
 
@@ -264,7 +264,7 @@ public class ESDbContext : DbContext
         var order = new Order
         {
             ObjectID = Guid.NewGuid(),
-            Name = "Производственный заказ 1",
+            Number = 1,
             RegDate = DateTime.UtcNow,
             IsApproved = false,
             IsCompleted = false,

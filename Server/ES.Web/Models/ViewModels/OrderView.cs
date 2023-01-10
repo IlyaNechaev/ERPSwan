@@ -3,12 +3,20 @@
 public struct OrderView
 {
     public Guid id { get; set; }
-    public string name { get; set; }
+    public int number { get; set; }
     public DateTime date_reg { get; set; }
     public bool is_approved { get; set; }
     public bool is_completed { get; set; }
     public bool is_checked { get; set; }
+    public int sum { get; set; }
+    public ForemanView foreman { get; set; }
     public OrderPartView[] parts { get; set; }
+}
+
+public struct ForemanView
+{
+    public Guid id { get; set; }
+    public string fullname { get; set; }
 }
 
 public struct OrderPartView

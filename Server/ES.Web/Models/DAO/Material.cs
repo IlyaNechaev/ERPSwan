@@ -8,6 +8,16 @@ public record Material : Entity
     public string Name { get; set; }
 
     /// <summary>
+    /// Артикул
+    /// </summary>
+    public int Code { get; set; }
+
+    /// <summary>
+    /// Единицы измерения
+    /// </summary>
+    public MeasureUnits Units { get; set; }
+
+    /// <summary>
     /// Хранящееся на складе количество материала
     /// </summary>
     public int CountStored { get; set; }
@@ -16,4 +26,22 @@ public record Material : Entity
     /// Зарезервированное количество материала
     /// </summary>
     public int CountReserved { get; set; }
+}
+
+public enum MeasureUnits
+{
+    /// <summary>
+    /// Метр 
+    /// </summary>
+    METER = 1,
+
+    /// <summary>
+    /// Штука
+    /// </summary>
+    PIECE = 2,
+
+    /// <summary>
+    /// Килограмм
+    /// </summary>
+    KILO = 3
 }

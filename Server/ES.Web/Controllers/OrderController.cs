@@ -38,7 +38,7 @@ public class OrderController : ControllerBase
         var orderView = new OrderView
         {
             id = order.ObjectID,
-            name = order.Name,
+            number = order.Number,
             date_reg = order.RegDate,
             is_approved = order.IsApproved,
             is_completed = order.IsCompleted,
@@ -65,15 +65,15 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet(ApiRoutes.Order.GetOrderList)]
-    public async Task<IActionResult> GetOrderList(string? name)
+    public async Task<IActionResult> GetOrderList(string? number)
     {
         var ordersQuery = _context.Orders
             .AsNoTracking()
             .AsQueryable();
 
-        if (name is not null)
+        if (number is not null)
         {
-            ordersQuery = ordersQuery.Where(o => o.Name.Contains(name));
+            ordersQuery = ordersQuery.Where(o => o.Number.ToString().Contains(number));
         }
 
         var ordersView = new OrderListView
@@ -82,7 +82,7 @@ public class OrderController : ControllerBase
             new OrderListView.OrderView
             {
                 id = o.ObjectID,
-                name = o.Name,
+                number = o.Number,
                 date_reg = o.RegDate,
                 is_completed = o.IsCompleted
             }).ToArray()
@@ -96,7 +96,7 @@ public class OrderController : ControllerBase
     {
         var order = new Order
         {
-            Name = model.name,
+            Number = model.number,
             RegDate = DateTime.Now,
             IsApproved = false,
             IsChecked = false,

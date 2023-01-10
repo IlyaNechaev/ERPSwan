@@ -6,7 +6,7 @@ public struct OrderListView
     public struct OrderView
     {
         public Guid id { get; set; }
-        public string name { get; set; }
+        public int number { get; set; }
         public DateTime date_reg { get; set; }
         public bool is_completed { get; set; }
     }
