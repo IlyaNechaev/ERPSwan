@@ -28,11 +28,12 @@ public class OrderController : ControllerBase
             .Include(o => o.Parts)
             .ThenInclude(p => p.Materials)
             .ThenInclude(m => m.Material)
+            .Include(o => o.Foreman)
             .FirstOrDefaultAsync(o => o.ObjectID == id);
 
         if (order is null)
         {
-            return BadRequest(new { error = $"Заказ {id} не существует" });
+            return Ok(new { error = $"Заказ {id} не существует" });
         }
 
         var orderView = new OrderView
@@ -43,6 +44,11 @@ public class OrderController : ControllerBase
             is_approved = order.IsApproved,
             is_completed = order.IsCompleted,
             is_checked = order.IsChecked,
+            foreman = new ForemanView
+            {
+                id = order.Foreman.ObjectID,
+                fullname = $"{order.Foreman.LastName} {order.Foreman.FirstName}"
+            },
             parts = order.Parts.Select(op =>
             new OrderPartView
             {
@@ -94,13 +100,20 @@ public class OrderController : ControllerBase
     [HttpPost(ApiRoutes.Order.CreateOrder)]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderEditModel model)
     {
+        var foreman = await _context.Users.FirstOrDefaultAsync(u => u.ObjectID == model.foremanId);
+        if (foreman is null)
+        {
+            return Ok(new { error = $"Польователь {model.foremanId} не найден" });
+        }
+
         var order = new Order
         {
             Number = model.number,
             RegDate = DateTime.Now,
             IsApproved = false,
             IsChecked = false,
-            IsCompleted = false
+            IsCompleted = false,
+            Foreman = foreman
         };
 
         await _context.Orders.AddAsync(order);
