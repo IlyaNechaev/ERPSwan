@@ -11,6 +11,8 @@ public class ESDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderPart> OrderParts { get; set; }
     public DbSet<OrderMaterial> OrderMaterials { get; set; }
+    public DbSet<Book> Books { get; set; }
+    public DbSet<BookEntry> BookEntries { get; set; }
 
     public ESDbContext(DbContextOptions options) : base(options)
     {
@@ -100,6 +102,12 @@ public class ESDbContext : DbContext
             .WithMany()
             .HasForeignKey(nameof(Order.ForemanID));
 
+        orderEntity
+            .HasMany(nameof(Order.Books))
+            .WithOne(nameof(Book.Order))
+            .HasPrincipalKey(nameof(Order.ObjectID))
+            .HasForeignKey(nameof(Book.OrderID));
+
         #endregion ORDER
 
         #region ORDER_PART
@@ -152,6 +160,107 @@ public class ESDbContext : DbContext
             .WithMany(nameof(OrderPart.Materials))
             .HasForeignKey(nameof(OrderMaterial.PartID))
             .HasPrincipalKey(nameof(OrderPart.ObjectID));
+
+        #endregion
+
+        #region BOOK
+
+        var bookEntity = builder.Entity<Book>();
+
+        bookEntity.HasKey(nameof(Book.ObjectID));
+
+        // FOREIGN KEYS
+        bookEntity
+            .HasOne(nameof(Book.DebetEntry))
+            .WithMany()
+            .HasForeignKey(nameof(Book.DebetID))
+            .HasPrincipalKey(nameof(BookEntry.ObjectID));
+
+        bookEntity
+            .HasOne(nameof(Book.CreditEntry))
+            .WithMany()
+            .HasForeignKey(nameof(Book.CreditID))
+            .HasPrincipalKey(nameof(BookEntry.ObjectID));
+
+        bookEntity
+            .HasOne(nameof(Book.Order))
+            .WithMany(nameof(Order.Books))
+            .HasForeignKey(nameof(Book.OrderID))
+            .HasPrincipalKey(nameof(Order.ObjectID));
+
+        #endregion
+
+        #region BOOK_ENTRY
+
+        var bookEntryEntity = builder.Entity<BookEntry>();
+
+        bookEntryEntity.HasKey(nameof(BookEntry.ObjectID));
+
+        var entries = new BookEntry[]
+        {
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "01",
+                Name = "Основные средства"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "02",
+                Name = "Амортизация основных средств"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "10",
+                Name = "Материалы"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "20",
+                Name = "Основное производство"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "43",
+                Name = "Готовая продукция"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "69",
+                Name = "Расчеты по социальному страхованию и обеспечению"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "70",
+                Name = "Расчеты с персоналом по оплате труда"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "80",
+                Name = "Уставный капитал"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "84",
+                Name = "Нераспределенная прибыль"
+            },
+            new()
+            {
+                ObjectID = Guid.NewGuid(),
+                Code = "99",
+                Name = "Прибыли и убытки"
+            }
+        };
+
+        bookEntryEntity.HasData(entries);
 
         #endregion
 

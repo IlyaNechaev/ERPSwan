@@ -39,6 +39,11 @@ public record Order : Entity
     public ICollection<OrderPart> Parts { get; set; }
 
     /// <summary>
+    /// Проводки
+    /// </summary>
+    public ICollection<Book> Books { get; set; }
+
+    /// <summary>
     /// Бригадир
     /// </summary>
     public User Foreman { get; set; }
