@@ -35,6 +35,8 @@ public class StoreService : IStoreService
             Sum = count * material.Price
         };
 
+        await _context.OrderMaterials.AddAsync(orderMaterial);
+
         await _context.SaveChangesAsync();
     }
 

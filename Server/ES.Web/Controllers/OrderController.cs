@@ -8,10 +8,12 @@ using ES.Web.Models.ViewModels;
 using ES.Web.Models.DAO;
 using ES.Web.Models.EditModels;
 using ES.Web.Services;
+using ExamManager.Filters;
 
 namespace ES.Web.Controllers;
 
 [ApiController]
+[JwtAuthorize]
 public class OrderController : ControllerBase
 {
     ESDbContext _context;
@@ -130,9 +132,10 @@ public class OrderController : ControllerBase
             OrderID = order.ObjectID,
             IsCompleted = false,
             OrderNum = p.order_num
-        });
+        }).ToArray();
 
         await _context.OrderParts.AddRangeAsync(orderParts);
+        await _context.SaveChangesAsync();        
 
         // Резервируем материалы
         foreach (var part in orderParts)
@@ -145,13 +148,11 @@ public class OrderController : ControllerBase
             }
         }
 
-        await _context.SaveChangesAsync();
-
         return Ok(new { id = order.ObjectID });
     }
 
     //[HttpPost(ApiRoutes.Order.ModifyOrder)]
-    //public async Task<IActionResult> ModifyOrder([FromBody] ModifyOrderEditModel model)
+    //public async Task<IActionResult> ModifyOrder([FromBody] ModifyOrdersEditModel model)
     //{
     //    if (model.orders is not null && model.orders.Length > 0)
     //    {
@@ -231,7 +232,6 @@ public class OrderController : ControllerBase
         try
         {
             await _storeService.AllocateMaterialsAsync(orderPart.ObjectID);
-            await transaction.RollbackAsync();
         }
         catch (Exception ex)
         {
@@ -239,7 +239,7 @@ public class OrderController : ControllerBase
             return Ok(new { error = ex.Message });
         }
 
-        var sum = orderPart.Materials.Select(om => om.Sum).Sum();
+        var sum = orderPart.Materials.Select(om => om.Sum ?? 0).Sum();
         await _bookService.AddBook(Constants.BookEntryCode.MAIN_PRODUCTION, Constants.BookEntryCode.MATERIALS, sum, order);
 
         await transaction.CommitAsync();

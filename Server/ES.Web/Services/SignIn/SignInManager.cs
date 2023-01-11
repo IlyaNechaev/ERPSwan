@@ -35,7 +35,7 @@ public class SignInManager
             PasswordHash = _securityService.Encrypt(model.Password),
             BirthDay = model.BirthDay,
             Age = DateTime.Now.Year - model.BirthDay.Year,
-            Role = UserRole.USER
+            Role = UserRole.WORKER
         };
         await _userService.AddUserAsync(newUser);
 
