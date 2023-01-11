@@ -35,7 +35,7 @@ public record Order : Entity
     /// <summary>
     /// Итоговая сумма ПЗ
     /// </summary>
-    public int Sum { get; set; }
+    public float? Sum { get; set; }
 
     /// <summary>
     /// Части производственного заказа

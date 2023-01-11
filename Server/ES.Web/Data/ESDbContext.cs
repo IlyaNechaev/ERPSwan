@@ -1,5 +1,6 @@
 ﻿using ES.Web.Models;
 using ES.Web.Models.DAO;
+using ES.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ES.Web.Data;
@@ -150,7 +151,7 @@ public class ESDbContext : DbContext
         // Count
         orderMaterial.Property(nameof(OrderMaterial.Count))
             .HasDefaultValue(0);
-
+                
         // FOREIGN KEYS
         orderMaterial
             .HasOne(nameof(OrderMaterial.Material));
@@ -270,96 +271,166 @@ public class ESDbContext : DbContext
         // Admin
         var adminUser = new User
         {
-            ObjectID = Guid.NewGuid(),
+            ObjectID = new Guid("f4f6c79f-b232-4fdf-b666-40ea657fe07a"),
             FirstName = "Админ",
-            LastName = "",
-            BirthDay = new DateTime(2000, 1, 1),
+            LastName = "Админ",
+            BirthDay = new DateTime(1997, 9, 4),
             Login = "admin",
-            PasswordHash = "admin",
+            PasswordHash = new SecurityService().Encrypt("admin"),
             Role = UserRole.ADMIN
         };
 
         userEntity.HasData(adminUser);
 
+        var defaultUsers = new List<User>
+        {
+            new User
+            {
+                ObjectID = new Guid("ad845b18-0b55-4d42-aab1-ae14c1e99b92"),
+                FirstName = "Анна",
+                LastName = "Малинова",
+                BirthDay = new DateTime(1991, 5, 17),
+                Login = "anna",
+                PasswordHash = new SecurityService().Encrypt("123"),
+                Role = UserRole.BOOKER
+            },
+            new User
+            {
+                ObjectID = new Guid("8ac4d193-acb3-448e-a6f6-c3c77092c12f"),
+                FirstName = "Сергей",
+                LastName = "Васильев",
+                BirthDay = new DateTime(1985, 12, 4),
+                Login = "sergey",
+                PasswordHash = new SecurityService().Encrypt("123"),
+                Role = UserRole.FOREMAN
+            },
+            new User
+            {
+                ObjectID = new Guid("cdef1e1a-6af8-4754-a5a7-a308ab4b19a8"),
+                FirstName = "Иван",
+                LastName = "Петров",
+                BirthDay = new DateTime(1990, 6, 23),
+                Login = "ivan",
+                PasswordHash = new SecurityService().Encrypt("123"),
+                Role = UserRole.WORKER
+            },
+        };
+
+        userEntity.HasData(defaultUsers);
+
+        var random = new Random(12);
         // Materials
         var materials = new Material[]
         {
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("aa628991-1113-486a-b705-3d54f1019c0d"),
                 Name = "Материал 1",
                 CountStored = 150,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("509b21ba-1331-4c06-afd8-5781161e2296"),
                 Name = "Материал 2",
                 CountStored = 100,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("2f43fb0b-af30-4805-bf78-3d92e9bec871"),
                 Name = "Материал 3",
                 CountStored = 200,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("92118cdc-1275-45d9-9774-5c3a27ac6db8"),
                 Name = "Материал 4",
                 CountStored = 500,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("c8b54ef6-45fb-4865-9042-6cd34aaabf54"),
                 Name = "Материал 5",
                 CountStored = 500,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("853a3600-df09-4709-85e5-42332adb21a9"),
                 Name = "Материал 6",
                 CountStored = 450,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("e7e87fcb-e048-403b-830d-487f0f4c0471"),
                 Name = "Материал 7",
                 CountStored = 3100,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("c17570a6-b141-4507-aea3-ce16acf5ce70"),
                 Name = "Материал 8",
                 CountStored = 25,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("4cfda7ac-5daf-45b8-9a2b-238d6319ecf4"),
                 Name = "Материал 9",
                 CountStored = 2000,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("b55319e7-afb4-4235-97df-a00cd0f391e3"),
                 Name = "Материал 10",
                 CountStored = 200,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             },
             new Material
             {
-                ObjectID = Guid.NewGuid(),
+                ObjectID = new Guid("ade2a3bc-2cf0-4902-8367-fef07f31e147"),
                 Name = "Материал 11",
                 CountStored = 100,
-                CountReserved = 0
+                CountReserved = 0,
+                Code = random.Next(),
+                Price = 20,
+                Units = MeasureUnits.PIECE
             }
         };
 
