@@ -8,7 +8,7 @@ public struct OrderView
     public bool is_approved { get; set; }
     public bool is_completed { get; set; }
     public bool is_checked { get; set; }
-    public int sum { get; set; }
+    public float sum { get; set; }
     public ForemanView foreman { get; set; }
     public OrderPartView[] parts { get; set; }
 }

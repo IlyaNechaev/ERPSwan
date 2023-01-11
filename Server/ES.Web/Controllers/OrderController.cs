@@ -148,6 +148,12 @@ public class OrderController : ControllerBase
             }
         }
 
+        order.Sum = order.Parts
+            .SelectMany(p => p.Materials.Select(om => om.Sum))
+            .Sum();
+
+        await _context.SaveChangesAsync();
+
         return Ok(new { id = order.ObjectID });
     }
 
