@@ -113,6 +113,19 @@ public class OrderController : ControllerBase
         {
             return Ok(new { error = $"Пользователь {model.foremanId} не найден" });
         }
+        if (await _context.Orders.AnyAsync(o => o.Number == model.number))
+        {
+            return Ok(new { error = $"Производственный заказ с номером {model.number} существует" });
+        }
+        var partsOrder = model.parts.Select(p => p.order_num).OrderBy(n => n);
+        if (partsOrder.First() != 1)
+        {
+            return Ok(new { error = $"Нумерация этапов ПЗ должна начинаться с 1" });
+        }
+        if (partsOrder.Select((n, i) => n / (i + 1)).Distinct().Count() > 1)
+        {
+            return Ok(new { error = $"Нумерация этапов ПЗ должна отличаться на 1" });
+        }
 
         var order = new Order
         {
