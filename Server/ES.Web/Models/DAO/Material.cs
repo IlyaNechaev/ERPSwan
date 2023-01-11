@@ -18,6 +18,11 @@ public record Material : Entity
     public MeasureUnits Units { get; set; }
 
     /// <summary>
+    /// Стоимость
+    /// </summary>
+    public float Price { get; set; }
+
+    /// <summary>
     /// Хранящееся на складе количество материала
     /// </summary>
     public int CountStored { get; set; }

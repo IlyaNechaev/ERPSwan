@@ -27,6 +27,10 @@ public record Order : Entity
     /// Заказ проверен
     /// </summary>
     public bool IsChecked { get; set; }
+    /// <summary>
+    /// Заказ отмене
+    /// </summary>
+    public bool IsCanceled { get; set; }
 
     /// <summary>
     /// Итоговая сумма ПЗ
