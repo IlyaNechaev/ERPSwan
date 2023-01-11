@@ -13,8 +13,23 @@ public record User : Entity
 
 public enum UserRole
 {
-    GUEST = 0,
+    /// <summary>
+    /// Администратор
+    /// </summary>
     ADMIN = 1 << 0,
-    USER = 1 << 1,
-    SECRETARY = 1 << 2
+
+    /// <summary>
+    /// Бухгалтер
+    /// </summary>
+    BOOKER = 1 << 2,
+
+    /// <summary>
+    /// Рабочий
+    /// </summary>
+    WORKER = 1 << 3,
+
+    /// <summary>
+    /// Бригадир
+    /// </summary>
+    FOREMAN = 1 << 4
 }
