@@ -1,6 +1,6 @@
 ﻿namespace ES.Web.Models.EditModels;
 
-public struct ModifyOrderEditModel
+public struct ModifyOrdersEditModel
 {
     public Order[] orders { get; set; }
     public OrderPart[] parts { get; set; }

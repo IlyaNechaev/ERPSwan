@@ -7,16 +7,24 @@ using ES.Web.Data;
 using ES.Web.Models.ViewModels;
 using ES.Web.Models.DAO;
 using ES.Web.Models.EditModels;
+using ES.Web.Services;
+using ExamManager.Filters;
 
 namespace ES.Web.Controllers;
 
 [ApiController]
+[JwtAuthorize]
 public class OrderController : ControllerBase
 {
     ESDbContext _context;
-    public OrderController(ESDbContext context)
+    IBookService _bookService;
+    IStoreService _storeService;
+
+    public OrderController(ESDbContext context, IBookService bookService, IStoreService storeService)
     {
         _context = context;
+        _bookService = bookService;
+        _storeService = storeService;
     }
 
     [HttpGet(ApiRoutes.Order.GetOrder)]
@@ -28,21 +36,27 @@ public class OrderController : ControllerBase
             .Include(o => o.Parts)
             .ThenInclude(p => p.Materials)
             .ThenInclude(m => m.Material)
+            .Include(o => o.Foreman)
             .FirstOrDefaultAsync(o => o.ObjectID == id);
 
         if (order is null)
         {
-            return BadRequest(new { error = $"Заказ {id} не существует" });
+            return Ok(new { error = $"Заказ {id} не существует" });
         }
 
         var orderView = new OrderView
         {
             id = order.ObjectID,
-            name = order.Name,
+            number = order.Number,
             date_reg = order.RegDate,
             is_approved = order.IsApproved,
             is_completed = order.IsCompleted,
             is_checked = order.IsChecked,
+            foreman = new ForemanView
+            {
+                id = order.Foreman.ObjectID,
+                fullname = $"{order.Foreman.LastName} {order.Foreman.FirstName}"
+            },
             parts = order.Parts.Select(op =>
             new OrderPartView
             {
@@ -65,15 +79,15 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet(ApiRoutes.Order.GetOrderList)]
-    public async Task<IActionResult> GetOrderList(string? name)
+    public async Task<IActionResult> GetOrderList(string? number)
     {
         var ordersQuery = _context.Orders
             .AsNoTracking()
             .AsQueryable();
 
-        if (name is not null)
+        if (number is not null)
         {
-            ordersQuery = ordersQuery.Where(o => o.Name.Contains(name));
+            ordersQuery = ordersQuery.Where(o => o.Number.ToString().Contains(number));
         }
 
         var ordersView = new OrderListView
@@ -82,7 +96,7 @@ public class OrderController : ControllerBase
             new OrderListView.OrderView
             {
                 id = o.ObjectID,
-                name = o.Name,
+                number = o.Number,
                 date_reg = o.RegDate,
                 is_completed = o.IsCompleted
             }).ToArray()
@@ -94,13 +108,33 @@ public class OrderController : ControllerBase
     [HttpPost(ApiRoutes.Order.CreateOrder)]
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderEditModel model)
     {
+        var foreman = await _context.Users.FirstOrDefaultAsync(u => u.ObjectID == model.foremanId);
+        if (foreman is null)
+        {
+            return Ok(new { error = $"Пользователь {model.foremanId} не найден" });
+        }
+        if (await _context.Orders.AnyAsync(o => o.Number == model.number))
+        {
+            return Ok(new { error = $"Производственный заказ с номером {model.number} существует" });
+        }
+        var partsOrder = model.parts.Select(p => p.order_num).OrderBy(n => n);
+        if (partsOrder.First() != 1)
+        {
+            return Ok(new { error = $"Нумерация этапов ПЗ должна начинаться с 1" });
+        }
+        if (partsOrder.Select((n, i) => n / (i + 1)).Distinct().Count() > 1)
+        {
+            return Ok(new { error = $"Нумерация этапов ПЗ должна отличаться на 1" });
+        }
+
         var order = new Order
         {
-            Name = model.name,
+            Number = model.number,
             RegDate = DateTime.Now,
             IsApproved = false,
             IsChecked = false,
-            IsCompleted = false
+            IsCompleted = false,
+            Foreman = foreman
         };
 
         await _context.Orders.AddAsync(order);
@@ -110,15 +144,26 @@ public class OrderController : ControllerBase
             EndDate = p.date_end,
             OrderID = order.ObjectID,
             IsCompleted = false,
-            OrderNum = p.order_num,
-            Materials = p.storelist.Select(m => new OrderMaterial
-            {
-                MaterialID = m.id,
-                Count = m.count
-            }).ToList()
-        });
+            OrderNum = p.order_num
+        }).ToArray();
 
         await _context.OrderParts.AddRangeAsync(orderParts);
+        await _context.SaveChangesAsync();        
+
+        // Резервируем материалы
+        foreach (var part in orderParts)
+        {
+            var stores = model.parts.First(p => p.order_num == part.OrderNum).storelist;
+
+            foreach (var store in stores)
+            {
+                await _storeService.ReserveMaterialsAsync(part, store.id, store.count);
+            }
+        }
+
+        order.Sum = order.Parts
+            .SelectMany(p => p.Materials.Select(om => om.Sum))
+            .Sum();
 
         await _context.SaveChangesAsync();
 
@@ -126,7 +171,7 @@ public class OrderController : ControllerBase
     }
 
     //[HttpPost(ApiRoutes.Order.ModifyOrder)]
-    //public async Task<IActionResult> ModifyOrder([FromBody] ModifyOrderEditModel model)
+    //public async Task<IActionResult> ModifyOrder([FromBody] ModifyOrdersEditModel model)
     //{
     //    if (model.orders is not null && model.orders.Length > 0)
     //    {
@@ -180,14 +225,43 @@ public class OrderController : ControllerBase
     [HttpPost(ApiRoutes.Order.ApproveOrder)]
     public async Task<IActionResult> ApproveOrder([FromQuery(Name = "id")] Guid orderId)
     {
-        var order = await _context.Orders.SingleOrDefaultAsync(o => o.ObjectID == orderId);
+        var order = await _context.Orders
+            .AsQueryable()
+            .SingleOrDefaultAsync(o => o.ObjectID == orderId);
 
         if (order is null)
         {
             return BadRequest(new { error = $"Производственный заказ {orderId} не существует" });
         }
 
+        if (order.IsCanceled)
+        {
+            return BadRequest(new { error = $"Производственный заказ {orderId}({order.Number}) был отменен" });
+        }        
+
+        var orderPart = await _context.OrderParts
+            .AsQueryable()
+            .Where(p => p.OrderID == orderId)
+            .Include(p => p.Materials)
+            .OrderBy(p => p.OrderNum)
+            .FirstAsync();
+
+        var transaction = await _context.Database.BeginTransactionAsync();
         order.IsApproved = true;
+        try
+        {
+            await _storeService.AllocateMaterialsAsync(orderPart.ObjectID);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            return Ok(new { error = ex.Message });
+        }
+
+        var sum = orderPart.Materials.Select(om => om.Sum ?? 0).Sum();
+        await _bookService.AddBook(Constants.BookEntryCode.MAIN_PRODUCTION, Constants.BookEntryCode.MATERIALS, sum, order);
+
+        await transaction.CommitAsync();
         await _context.SaveChangesAsync();
 
         return Ok(new { message = "Success" });
@@ -196,11 +270,19 @@ public class OrderController : ControllerBase
     [HttpPost(ApiRoutes.Order.CompleteOrder)]
     public async Task<IActionResult> CompleteOrder([FromQuery(Name = "id")] Guid partId)
     {
-        var currentPart = await _context.OrderParts.SingleOrDefaultAsync(p => p.ObjectID == partId);
+        var currentPart = await _context.OrderParts
+            .AsQueryable()
+            .Include(p => p.Order)
+            .SingleOrDefaultAsync(p => p.ObjectID == partId);
 
         if (currentPart is null)
         {
             return BadRequest(new { error = $"Производственный заказ {partId} не существует" });
+        }
+
+        if (currentPart.Order.IsCanceled || !currentPart.Order.IsApproved)
+        {
+            return BadRequest(new { error = $"Производственный заказ {currentPart.Order.ObjectID} не был утвержден" });
         }
 
         var orderParts = _context.OrderParts
@@ -225,6 +307,11 @@ public class OrderController : ControllerBase
             order = await _context.Orders.FirstAsync(o => o.ObjectID == currentPart.OrderID);
             order!.IsCompleted = true;
         }
+        else
+        {
+            var nextPart = orderParts.First(p => p.OrderNum == currentPart.OrderNum + 1);
+            await _storeService.AllocateMaterialsAsync(nextPart.ObjectID);
+        }
 
         await _context.SaveChangesAsync();
 
@@ -241,14 +328,19 @@ public class OrderController : ControllerBase
             return BadRequest(new { error = $"Производственный заказ {orderId} не существует" });
         }
 
+        if (!order.IsCompleted)
+        {
+            return BadRequest(new { error = $"Производственный заказ {orderId}({order.Number}) не был завершен" });
+        }
+
         order.IsChecked = true;
         await _context.SaveChangesAsync();
 
         return Ok(new { message = "Success" });
     }
 
-    [HttpDelete(ApiRoutes.Order.DeleteOrder)]
-    public async Task<IActionResult> DeleteOrder(Guid id)
+    [HttpPost(ApiRoutes.Order.CancelOrder)]
+    public async Task<IActionResult> CancelOrder(Guid id)
     {
         var order = await _context.Orders.FirstOrDefaultAsync(o => o.ObjectID == id);
 
@@ -257,7 +349,8 @@ public class OrderController : ControllerBase
             throw new ArgumentException($"Производственного заказа {id} не существует");
         }
 
-        _context.Orders.Remove(order);
+        order.IsCanceled = true;
+        await _storeService.UnreserveMaterialsAsync(order.ObjectID);
 
         await _context.SaveChangesAsync();
 

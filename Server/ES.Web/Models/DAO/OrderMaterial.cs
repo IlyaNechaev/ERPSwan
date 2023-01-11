@@ -6,6 +6,7 @@
     public class OrderMaterial
     {
         public int Count { get; set; }
+        public float? Sum { get; set; }
 
         public Guid PartID { get; set; }
         public OrderPart Part { get; set; }

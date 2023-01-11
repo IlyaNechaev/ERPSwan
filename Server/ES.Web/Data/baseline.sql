@@ -1,9 +1,12 @@
 ﻿use proto
 
 -- Инициализировать таблицу Orders
-insert into Orders(ObjectID, [Name], RegDate, IsApproved, IsCompleted, IsChecked)
+declare @foremanId uniqueidentifier
+select top 1 @foremanId = ObjectID from Users where [Role] = 4
+
+insert into Orders(ObjectID, Number, RegDate, IsApproved, IsCompleted, IsChecked, IsCanceled, ForemanID)
 values
-(newid(), 'Производственный заказ 1', getdate(), 0, 0, 0);
+(newid(), 1, getdate(), 0, 0, 0, 0, @foremanId);
 
 -- Инициализировать таблицу OrderParts
 declare @orderID uniqueidentifier

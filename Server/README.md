@@ -1,28 +1,5 @@
 # Описание API
 
-<style>
-    th{
-        background-color: rgba(1,1,1,.3)
-    }
-    td,th{
-        border: 1px solid black;
-    }
-    .clr-cyan{
-        background-color: rgba(1,200,200,.5)
-    }
-    a,a:visited{
-        text-decoration: none;
-        color: rgba(1,100,200,1);
-    }
-    a:hover{
-        color: rgba(1,100,200,.7);
-    }
-    .req{
-        font-weight: 600;
-        color: rgba(1,100,150,1);
-    }
-</style>
-
 ## Склад
 
 <table>
@@ -224,6 +201,16 @@
         <td>Идентификатор материала</td>
     </tr>
     <tr>
+        <td>code</td>
+        <td>int</td>
+        <td>Артикул</td>
+    </tr>
+    <tr>
+        <td>units</td>
+        <td>int</td>
+        <td>Единицы измерения</td>
+    </tr>
+    <tr>
         <td>name</td>
         <td>string</td>
         <td>Название материала</td>
@@ -259,28 +246,28 @@
     <tr>
         <td colspan=3>id</td>
         <td>guid</td>
-        <td>Идентификатор заказа</td>
+        <td>Идентификатор ПЗ</td>
     </tr>
     <tr>
-        <td colspan=3>name</td>
-        <td>string</td>
-        <td>Название заказа</td>
+        <td colspan=3>number</td>
+        <td>int</td>
+        <td>Номер ПЗ</td>
     </tr>
     <tr>
         <td colspan=3>date_reg</td>
         <td>date</td>
-        <td>Дата регистрации заказа</td>
+        <td>Дата регистрации ПЗ</td>
     </tr>    
     <tr>
         <td colspan=3>parts</td>
         <td>part[]</td>
-        <td>Части заказа</td>
+        <td>Части ПЗ</td>
     </tr>
     <tr>
         <td class="clr-cyan"></td>
         <td colspan=2>id</td>
         <td>guid</td>
-        <td>Идентификатор части заказа</td>
+        <td>Идентификатор части ПЗ</td>
     </tr>
     <tr>
         <td class="clr-cyan"></td>
@@ -342,6 +329,28 @@
         <td>bool</td>
         <td>Заказ проверен</td>
     </tr>
+    <tr>
+        <td colspan=3>foreman</td>
+        <td>user</td>
+        <td>Бригадир</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td colspan=2>id</td>
+        <td>guid</td>
+        <td>Идентификатор пользователя</td>
+    </tr>
+    <tr>
+        <td class="clr-cyan"></td>
+        <td colspan=2>fullname</td>
+        <td>string</td>
+        <td>ФИО</td>
+    </tr>
+    <tr>
+        <td colspan=3>sum</td>
+        <td>int</td>
+        <td>Итоговая стоимость</td>
+    </tr>
 </table>
 
 ### OrderList
@@ -392,9 +401,14 @@
         <th>Описание</th>
     </tr>
     <tr>
-        <td colspan=3>name</td>
-        <td>string</td>
-        <td>Название заказа</td>
+        <td colspan=3>number</td>
+        <td>int</td>
+        <td>Номер ПЗ</td>
+    </tr>
+    <tr>
+        <td colspan=3>foremanId</td>
+        <td>guid</td>
+        <td>Идентификатор бригадира</td>
     </tr>
     <tr>
         <td colspan=3>parts</td>

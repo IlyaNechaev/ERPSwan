@@ -25,7 +25,7 @@ public static class ApiRoutes
         public const string GetOrderList = $"{Base}/order/get-list";
         public const string CreateOrder = $"{Base}/order/create";
         public const string ModifyOrder = $"{Base}/order/modify";
-        public const string DeleteOrder = $"{Base}/order/delete";
+        public const string CancelOrder = $"{Base}/order/cancel";
 
         public const string ApproveOrder = $"{Base}/order/approve";
         public const string CompleteOrder = $"{Base}/order/complete";

@@ -2,7 +2,16 @@
 
 public struct CreateOrderEditModel
 {
-    public string name { get; set; }
+    /// <summary>
+    /// Номер ПЗ
+    /// </summary>
+    public int number { get; set; }
+
+    /// <summary>
+    /// Идентификатор бригадира
+    /// </summary>
+    public Guid foremanId { get; set; }
+
     public OrderPart[] parts { get; set; }
     
     public struct OrderPart

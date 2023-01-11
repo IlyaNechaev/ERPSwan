@@ -18,6 +18,8 @@ builder.Services.AddSqlDbContext(builder.Configuration);
 
 builder.Services.AddTransient<SignInManager, SignInManager>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IBookService, BookService>();
+builder.Services.AddTransient<IStoreService, StoreService>();
 builder.Services.AddTransient<ISecurityService, SecurityService>();
 builder.Services.AddTransient<IJwtUtils, JwtUtils>();
 
