@@ -3,6 +3,7 @@ import './App.css';
 import Login from './Login/Login';
 import Account from './Account'
 import Orders from './pages/Orders';
+import Order from './pages/Order';
 import CookieManager from './utils/Cookie';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ function App() {
         <Route path='*' element={<Navigate to='swan/orders'/>}/>
         <Route path='swan' element={<Account/>}>
           <Route path='orders' element={<Orders/>}/>
+          <Route path='order' element={<Order />}/>
         </Route>
       </Routes>
     </BrowserRouter>

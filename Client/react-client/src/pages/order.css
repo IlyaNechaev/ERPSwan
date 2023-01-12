@@ -1,0 +1,34 @@
+.page-content > .stage{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    margin-top: 2em;
+
+    border: 1px solid rgba(1,1,1,.2);
+}
+
+.stage.hidden > *{
+    opacity: 50%;
+}
+
+.stage > .header{
+    font-size: 1.5em;
+    font-family: var(--font-oswald);
+
+    margin-bottom: 1em;
+}
+
+.stage > .footer{
+    display: flex;
+    justify-content: end;
+
+    padding-top: 1em;
+    font-size: 1.2em;
+}
+
+@media(min-width: 1100px){
+    .page-content > .stage{
+        margin-left: 20%;
+        margin-right: 20%;
+    }
+}
