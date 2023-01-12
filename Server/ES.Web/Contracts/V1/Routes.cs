@@ -13,6 +13,11 @@ public static class ApiRoutes
         public const string Test = $"{Base}/test";
     }
 
+    public static class User
+    {
+        public const string GetUser = $"{Base}/user/get";
+    }
+
     public static class Store
     {
         public const string GetStore = $"{Base}/store/get";

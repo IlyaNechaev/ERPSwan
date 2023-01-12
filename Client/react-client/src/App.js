@@ -3,12 +3,13 @@ import './App.css';
 import Login from './Login/Login';
 import Account from './Account'
 import Orders from './pages/Orders';
-import Order from './pages/Order';
+import Order from './pages/Views/Order';
 import CookieManager from './utils/Cookie';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import OrderMaster from './pages/Masters/OrderMaster';
 
 function App() {
-  let jwt = CookieManager.GetCookie('swan-token');
+  let jwt = CookieManager.GetCookie('token');
 
   if (jwt == null){
     return (
@@ -27,6 +28,7 @@ function App() {
         <Route path='swan' element={<Account/>}>
           <Route path='orders' element={<Orders/>}/>
           <Route path='order' element={<Order />}/>
+          <Route path='new-order' element={<OrderMaster />}/>
         </Route>
       </Routes>
     </BrowserRouter>

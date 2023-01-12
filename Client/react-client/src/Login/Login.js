@@ -18,8 +18,8 @@ function Login() {
                 }
             })
             .then((data) => {
-                let token = data.token;
-                CookieManager.SetCookie('swan-token', token);
+                CookieManager.SetCookie('token', data.token);
+                CookieManager.SetCookie('swan-user', JSON.stringify(data.user));
                 document.location.pathname = 'orders';
             });
     }

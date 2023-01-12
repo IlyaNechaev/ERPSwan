@@ -1,14 +1,23 @@
 using ES.Web.Contracts.V1;
+using ES.Web.Data;
 using ES.Web.Models;
 using ES.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ES.Web.Controllers;
 
 [ApiController]
 public class HomeController : ControllerBase
 {
+    IUserService _userService;
+
+    public HomeController(IUserService userService)
+    {
+        _userService = userService;
+    }
+
     [HttpPost]
     [Route(ApiRoutes.Home.Register)]
     public async Task<IActionResult> Register([FromBody] RegisterEditModel model,
@@ -44,6 +53,7 @@ public class HomeController : ControllerBase
             return Ok(new { Error = ex.Message });
         }
 
-        return Ok(new { token = token });
+        var user = await _userService.GetUserAsync(model.Login);
+        return Ok(new { token = token, user = user });
     }
 }

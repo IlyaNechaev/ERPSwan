@@ -1,9 +1,14 @@
 import React from "react";
 import '../utils/utils.css';
+import './page.css';
 import RequestManager from "../contracts/requests";
 
 function Orders(){
     let [orderList, setOrderList] = React.useState();
+
+    let handleAddOrder = function(e){
+        window.location.href = '/swan/new-order';
+    }
 
     React.useEffect(() => {
         RequestManager.getOrderList()
@@ -30,12 +35,14 @@ function Orders(){
             });
 
             setOrderList(newOrders);
-        });
-    
-    })
+        });    
+    }, []);
 
     return (
         <div className="page-content">
+            <div className="row end">
+                <input type="button" className="btn btn-primary" value="Добавить" onClick={handleAddOrder}/>
+            </div>
             <div className="list">
                 {orderList}
             </div>

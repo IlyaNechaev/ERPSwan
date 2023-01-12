@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ExamManager.Filters;
+namespace ES.Web.Filters;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class JwtAuthorizeAttribute : Attribute, IAuthorizationFilter

@@ -1,6 +1,8 @@
+import CookieManager from "../utils/Cookie";
+
 class RequestManager{
     
-    static requestRoot = "api/v1";
+    static requestRoot = "https://localhost:7090/api/v1";
 
     // Home
     static loginUser = async function (login, password){
@@ -12,7 +14,7 @@ class RequestManager{
             'Content-Type': 'application/json'
         };
 
-        let response = await fetch(`${this.requestRoot}/login`, {
+        let response = fetch(`${this.requestRoot}/login`, {
             method: 'POST',
             body: JSON.stringify(loginModel),
             headers: headers
@@ -23,18 +25,26 @@ class RequestManager{
     }
 
     // Store
-    static getStoreList = async function(name){
-        let response = await fetch(`${this.requestRoot}/store/get-list${name == null ? '' : '?name=' + name}`, {
-            method: "GET"
+    static getStoreList = function(name){
+        let jwt = CookieManager.GetCookie('token');
+        let response = fetch(`${this.requestRoot}/store/get-list${name == null ? '' : '?name=' + name}`, {
+            method: "GET",
+            headers:{
+                'Authorization': jwt
+            }
         })
         .catch(err => console.log(err));
 
         return response;
     }
 
-    static getStore = async function(id){
-        let response = await fetch(`${this.requestRoot}/store/get?id=${id}`, {
-            method: "GET"
+    static getStore = function(id){
+        let jwt = CookieManager.GetCookie('token');
+        let response = fetch(`${this.requestRoot}/store/get?id=${id}`, {
+            method: "GET",
+            headers:{
+                'Authorization': jwt
+            }
         })
         .catch(err => console.log(err));
 
@@ -42,30 +52,52 @@ class RequestManager{
     }
 
     // Order
-    static getOrderList = async function (number){
-        let response = await fetch(`${this.requestRoot}/order/get-list${number == null ? '' : '?number=' + number}`, {
-            method: "GET"
-        })
-        .catch(err => console.log(err));
+    static getOrderList = function (number){
+        let jwt = CookieManager.GetCookie('token');
+        let response = fetch(`${this.requestRoot}/order/get-list${number == null ? '' : '?number=' + number}`, {
+            method: "GET",
+            headers:{
+                'Authorization': jwt
+            }
+        });
 
         return response;
     }
 
-    static getOrder = async function(id){
-        let response = await fetch(`${this.requestRoot}/order/get?id=${id}`, {
-            method: "GET"
-        })
-        .catch(err => console.log(err));
+    static getOrder = function(id){
+        let jwt = CookieManager.GetCookie('token');
+        let response = fetch(`${this.requestRoot}/order/get?id=${id}`, {
+            method: "GET",
+            headers:{
+                'Authorization': jwt
+            }
+        });
 
         return response;
     }
 
-    static approveOrder = async function(partId){
-        let response = await fetch(`${this.requestRoot}/order/approve?id=${partId}`, {
-            method: "POST"
-        })
-        .catch(err => console.log(err));
+    static approveOrder = function(id){
+        let jwt = CookieManager.GetCookie('token');
+        let response = fetch(`${this.requestRoot}/order/approve?id=${id}`, {
+            method: "POST",
+            headers:{
+                'Authorization': jwt
+            }
+        });
 
+        return response;
+    }
+
+    static completeOrder = function(id){
+        let jwt = CookieManager.GetCookie('token');
+        let response = fetch(`${this.requestRoot}/order/complete?id=${id}`, {
+            method: "POST",
+            headers:{
+                'Authorization': jwt
+            }
+        });
+
+        console.log(response);
         return response;
     }
 }

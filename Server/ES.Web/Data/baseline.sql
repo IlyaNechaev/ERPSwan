@@ -30,9 +30,17 @@ select top 1 @secondPartID = ObjectID from OrderParts where OrderNum = 2;
 select top 1 @material1 = ObjectID from Materials where [Name] like '%1%';
 select top 1 @material2 = ObjectID from Materials where [Name] like '%2%';
 
-insert into OrderMaterials(PartID, MaterialID, [Count])
+insert into OrderMaterials(PartID, MaterialID, [Count], [Sum])
 values
-(@firstPartID, @material1, 15),
-(@firstPartID, @material2, 6),
-(@secondPartID, @material1, 30),
-(@secondPartID, @material2, 8)
+(@firstPartID, @material1, 15, 15 * (select Price from Materials where ObjectID = @material1)),
+(@firstPartID, @material2, 6, 6 * (select Price from Materials where ObjectID = @material2)),
+(@secondPartID, @material1, 30, 30 * (select Price from Materials where ObjectID = @material1)),
+(@secondPartID, @material2, 8, 8 * (select Price from Materials where ObjectID = @material2))
+
+update Materials
+set CountReserved = 45
+where ObjectID = @material1
+
+update Materials
+set CountReserved = 14
+where ObjectID = @material2

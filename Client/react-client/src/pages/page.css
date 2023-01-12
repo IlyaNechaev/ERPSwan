@@ -17,3 +17,13 @@
 
     margin-bottom: 1em;
 }
+
+.page-content > .row{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1em;;
+}
+
+.row.end{
+    justify-content: end;
+}

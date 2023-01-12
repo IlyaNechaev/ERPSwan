@@ -8,7 +8,7 @@ using ES.Web.Models.ViewModels;
 using ES.Web.Models.DAO;
 using ES.Web.Models.EditModels;
 using ES.Web.Services;
-using ExamManager.Filters;
+using ES.Web.Filters;
 
 namespace ES.Web.Controllers;
 
@@ -72,6 +72,7 @@ public class OrderController : ControllerBase
                     name = m.Material.Name
                 }).ToArray()
             })
+            .OrderBy(part => part.order_num)
             .ToArray()
         };
 
@@ -92,7 +93,7 @@ public class OrderController : ControllerBase
 
         var ordersView = new OrderListView
         {
-            list = ordersQuery.Select(o =>
+            list = ordersQuery.OrderBy(o => o.Number).Select(o =>
             new OrderListView.OrderView
             {
                 id = o.ObjectID,
@@ -301,16 +302,18 @@ public class OrderController : ControllerBase
         }
 
         currentPart.IsCompleted = true;
-        Order order;
+        Order order = await _context.Orders.FirstAsync(o => o.ObjectID == currentPart.OrderID); ;
         if (orderParts.Select(p => p.IsCompleted).Aggregate((p1, p2) => p1 && p2))
         {
-            order = await _context.Orders.FirstAsync(o => o.ObjectID == currentPart.OrderID);
             order!.IsCompleted = true;
         }
         else
         {
             var nextPart = orderParts.First(p => p.OrderNum == currentPart.OrderNum + 1);
             await _storeService.AllocateMaterialsAsync(nextPart.ObjectID);
+
+            var sum = nextPart.Materials.Select(om => om.Sum ?? 0).Sum();
+            await _bookService.AddBook(Constants.BookEntryCode.MAIN_PRODUCTION, Constants.BookEntryCode.MATERIALS, sum, order);
         }
 
         await _context.SaveChangesAsync();
@@ -334,6 +337,8 @@ public class OrderController : ControllerBase
         }
 
         order.IsChecked = true;
+        await _bookService.AddBook(Constants.BookEntryCode.PRODUCTS, Constants.BookEntryCode.MAIN_PRODUCTION, order.Sum ?? 0, order);
+
         await _context.SaveChangesAsync();
 
         return Ok(new { message = "Success" });
