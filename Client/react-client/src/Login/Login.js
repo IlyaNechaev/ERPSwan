@@ -16,6 +16,11 @@ function Login() {
                 if (res.ok){
                     return res.json();
                 }
+            })
+            .then((data) => {
+                let token = data.token;
+                CookieManager.SetCookie('swan-token', token);
+                document.location.pathname = 'orders';
             });
     }
 

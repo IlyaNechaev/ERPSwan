@@ -1,12 +1,15 @@
 import './sidebar.css';
 import React from 'react';
+import CookieManager from '../utils/Cookie';
+import { Navigate } from 'react-router';
 
 function NavBar(){
 
     let currentLocation = window.location.pathname;
     
-    let handleLogout = function(){
-
+    let handleLogout = function(e){
+        CookieManager.RemoveCookie('swan-token');
+        window.location.href = '/login';
     }
 
     return (
@@ -15,15 +18,9 @@ function NavBar(){
             <div className="title">Нечаев Илья</div>
         </div>
         <div className="body">
-<<<<<<< Updated upstream
-            <a href="/orders" className={"link" + (currentLocation == "/orders" ? " hl" : "")}>Заказы</a>
-            <a href="/store" className={"link" + (currentLocation == "/store" ? " hl" : "")}>Склад</a>
-            <a className="link">Выйти</a>
-=======
             <a href="/swan/orders" className={"link" + (currentLocation == "/swan/orders" ? " hl" : "")}>Заказы</a>
             <a href="/swan/store" className={"link" + (currentLocation == "/swan/store" ? " hl" : "")}>Склад</a>
             <a className="link" onClick={handleLogout}>Выйти</a>
->>>>>>> Stashed changes
         </div>
     </div>
     )
